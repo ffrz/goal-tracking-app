@@ -1,0 +1,33 @@
+// services/goal-service/goal.proto
+
+syntax = "proto3";
+
+package goal_service;
+
+option go_package = "goal-tracking-app/services/goal-service;goal_service";
+
+// Definisikan Service RPC
+service GoalService {
+  // Endpoint RPC untuk membuat Goal baru
+  rpc CreateGoal (CreateGoalRequest) returns (Goal);
+  // Endpoint RPC untuk mendapatkan detail Goal
+  rpc GetGoal (GetGoalRequest) returns (Goal);
+}
+
+// Pesan (Message) untuk Request
+message CreateGoalRequest {
+  string title = 1;
+  int32 user_id = 2;
+}
+
+message GetGoalRequest {
+  int32 goal_id = 1;
+}
+
+// Pesan (Message) untuk Response/Model Data
+message Goal {
+  int32 id = 1;
+  string title = 2;
+  int32 user_id = 3;
+  string status = 4; // Contoh: "active", "completed"
+}

@@ -1,0 +1,44 @@
+# deployments/docker-compose.yml
+version: "3.8"
+
+services:
+  # --- 1. GOAL SERVICE (gRPC Server) ---
+  goal-service:
+    build:
+      context: ../services/goal-service # Path ke Dockerfile service
+      dockerfile: Dockerfile
+    container_name: goal-service
+    restart: always
+    # Service internal berkomunikasi melalui nama service, tidak perlu expose port ke host
+    # Port gRPC 50051 hanya diakses di dalam network Docker
+    ports:
+      - "50051:50051"
+
+  # --- 2. TASK SERVICE (Placeholder) ---
+  # Kita akan isi ini nanti, menggunakan Goal Service sebagai template.
+  task-service:
+    image: alpine/git # Hanya placeholder image
+    container_name: task-service
+    command:
+      sh -c "echo 'Task Service is a placeholder for now' && sleep infinity"
+    restart: always
+    # Task Service akan berjalan di port 50052
+
+  # --- 3. API GATEWAY (Next.js/GraphQL) ---
+  gateway:
+    build:
+      context: ../gateway # Path ke Dockerfile Next.js
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    restart: always
+    # Expose port ke host agar bisa diakses browser
+    ports:
+      - "3000:3000"
+    depends_on:
+      - goal-service
+      - task-service
+    environment:
+      # Variabel lingkungan untuk internal gRPC connection
+      # HOSTNAME harus sesuai dengan container_name service internal
+      GOAL_SERVICE_HOST: goal-service
+      GOAL_SERVICE_PORT: 50051

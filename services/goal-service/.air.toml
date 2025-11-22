@@ -1,0 +1,14 @@
+# services/goal-service/.air.toml
+root = "."
+tmp_dir = "tmp"
+
+[build]
+    cmd = "go build -o ./tmp/goal-service ./cmd/main.go"  # Perintah kompilasi
+    bin = "./tmp/goal-service"                         # Lokasi executable
+    include_ext = ["go", "tpl", "tmpl", "html", "proto"] # Ekstensi file yang dipantau
+    # Abaikan direktori ini saat memantau perubahan
+    exclude_dir = ["tmp", "vendor", "testdata", "node_modules", "gateway"]
+
+[run]
+    # Perintah untuk menjalankan aplikasi setelah kompilasi
+    cmd = "./tmp/goal-service"
